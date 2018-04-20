@@ -15,16 +15,13 @@ tilesize=128
 platformimg=[pygame.image.load('platform'+str(i)+'.png') for i in range(1,10)]
 lenemyimg=[pygame.image.load('L'+str(i)+'E.png') for i in range(1,12)]
 renemyimg=[pygame.image.load('R'+str(i)+'E.png') for i in range(1,12)]
-player_img=pygame.image.load('standing.png')
 rightwalkimg=[pygame.image.load('R'+str(i)+'.png') for i in range(1,10)]
 leftwalkimg=[pygame.image.load('L'+str(i)+'.png') for i in range(1,10)]
 waterimg=[pygame.image.load('w'+str(i)+'.png') for i in range(1,18)]
-coinimg=pygame.image.load('coin_gold.png')
 laserimg=pygame.image.load('laser.png')
 enemylaserimg=pygame.image.load('elaser.png')
 screen=pygame.display.set_mode([dw,dh])
 pygame.display.set_caption("Platformer template")
-bg=pygame.image.load('bg_layer1.png')
 clock=pygame.time.Clock()
 class Map:
    def __init__(self,filename):
@@ -123,7 +120,6 @@ class Player(pygame.sprite.Sprite):
          if now-self.lastshoot>500:
             self.lastshoot=now
             self.shoot()
-      coinhit=pygame.sprite.spritecollide(self,self.game.coins,1,pygame.sprite.collide_circle)
       self.rect.x+=self.vx
       hits1=pygame.sprite.spritecollide(self,self.game.platforms,False)
       for hit in hits1:
@@ -209,13 +205,7 @@ class MovingPlatform(pygame.sprite.Sprite):
       elif self.rect.x==self.rightlimit:
          self.vx*=-1
       self.rect.x+=self.vx
-class Coin(pygame.sprite.Sprite):
-   def __init__(self,x,y):
-      super().__init__()
-      self.image=coinimg
-      self.rect=self.image.get_rect()
-      self.rect.x=x*tilesize
-      self.rect.y=y*tilesize
+
 class Water(pygame.sprite.Sprite):
    def __init__(self,x,y):
       super().__init__()
@@ -325,7 +315,6 @@ class Game:
       self.enemies=pygame.sprite.Group()
       self.bullets=pygame.sprite.Group()
       self.ebullets=pygame.sprite.Group()
-      self.coins=pygame.sprite.Group()
       self.waters=pygame.sprite.Group()
       for row,tiles in enumerate(self.map.data):
          for col,tile in enumerate(tiles):
@@ -373,10 +362,6 @@ class Game:
                self.platform=MovingPlatform(col,row)
                self.platforms.add(self.platform)
                self.all_sprites.add(self.platform)
-            if tile=='c':
-               self.coin=Coin(col,row)
-               self.coins.add(self.coin)
-               self.all_sprites.add(self.coin)
             if tile=='w':
                self.water=Water(col,row)
                self.waters.add(self.water)
